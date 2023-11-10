@@ -17,6 +17,7 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -25,8 +26,7 @@ public class ProjectSecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityContext(context -> context.requireExplicitSave(false))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(configureCors())
                 .csrf(configureCsrf())
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
@@ -48,6 +48,7 @@ public class ProjectSecurityConfig {
             config.setAllowedMethods(Collections.singletonList("*"));
             config.setAllowCredentials(true);
             config.setAllowedHeaders(Collections.singletonList("*"));
+            config.setExposedHeaders(Arrays.asList("Authorization"));
             config.setMaxAge(7200L);
 
             return config;
